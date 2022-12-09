@@ -1,4 +1,5 @@
-﻿using PresseMots_DataAccess.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using PresseMots_DataAccess.Context;
 using PresseMots_DataAccess.Services;
 using PresseMots_DataModels.Entities;
 using System;
@@ -10,9 +11,9 @@ namespace PresseMots_Web.Services.impl
 {
     public class StoryService : ServiceBaseEF<Story>, IStoryService
     {
-        private HtmlSanitizer sanitizer;
+        private IHtmlSanitizer sanitizer;
 
-        public StoryService(PresseMotsDbContext dbContext, HtmlSanitizer sanitizer) : base(dbContext)
+        public StoryService(PresseMotsDbContext dbContext, IHtmlSanitizer sanitizer) : base(dbContext)
         {
             this.sanitizer = sanitizer;
         }

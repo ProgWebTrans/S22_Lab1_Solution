@@ -21,6 +21,8 @@ namespace PresseMots_Web.Services.impl
 
         public async Task DeleteAsync(int id)
         {
+            if (id <= 0) throw new ArgumentException("Invalid id") ;
+
             var fromDb = await GetByIdAsync(id);
             fromDb.Hidden = true;
             await EditAsync(fromDb);
@@ -28,10 +30,10 @@ namespace PresseMots_Web.Services.impl
 
         public async Task<CommentViewModel> GetVMByStoryIdAsync(int storyId)
         {
-            var story = await _dbContext.Stories.Where(x => x.Id == storyId).FirstOrDefaultAsync();
+            var story = await _dbContext.Stories.Include(x=>x.Comments).Where(x => x.Id == storyId).FirstOrDefaultAsync();
 
 
-            if (story == null) throw new ArgumentNullException("Story is not found");
+            if (story == null) throw new ArgumentNullException("story","Story is not found");
 
 
 
