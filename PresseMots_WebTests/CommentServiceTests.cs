@@ -50,8 +50,22 @@ Placerat orci nulla pellentesque dignissim enim sit amet venenatis urna.Sagittis
                         
                         
                         
-                        }
-                        
+                        },
+                         new Story()
+                         {
+                             Id = 2,
+                             Content = null,
+                             CreationTime = new DateTime(2022, 02, 01),
+                             Draft = false,
+                             LastEditTime = new DateTime(2022, 02, 02),
+                             OwnerId = 1,
+                             PublishTime = new DateTime(2022, 03, 01),
+                             Title = "Paroles de la chanson Lorem Ipsum v2",
+
+
+
+                         }
+
                         );
                     context.SaveChanges();
                 }
@@ -62,7 +76,7 @@ Placerat orci nulla pellentesque dignissim enim sit amet venenatis urna.Sagittis
                     context.Comments.AddRange(
                      new Comment { Id = 1, Content = "First", DisplayName="Julie", Email = "julie@pressemots.com", Hidden = false, Rating = 2.5m, StoryId=1 /*…*/  },
                       new Comment { Id = 2, Content = "Second", DisplayName = "Fred", Email = "fred@pressemots.com", Hidden = false, Rating = 3m, StoryId = 1 /*…*/  },
-                    new Comment { Id = 3, Content = "First", DisplayName = "Julie", Email = "julie@pressemots.com", Hidden = false, Rating = 2.5m, StoryId = 2 /*…*/  });
+                    new Comment { Id = 3, Content = "First", DisplayName = "Julie", Email = "julie@pressemots.com", Hidden = true, Rating = 2.5m, StoryId = 1 /*…*/  });
                     context.SaveChanges();
                 }
 
@@ -205,7 +219,30 @@ Placerat orci nulla pellentesque dignissim enim sit amet venenatis urna.Sagittis
 
         }
 
+        [Fact]
+        public async Task GetVMByStoryIdAsync_WithNullContent()
+        {
+            using (var context = new PresseMotsDbContext(SetUpInMemory("GetVMByStoryIdAsync_WithNullContent", true)))
+            {
+                //arrange
+                var wordCounterMock = new Mock<WordCounter>();
+                wordCounterMock.Setup(x => x.Count(It.IsAny<string>())).Returns(0);
 
+                ICommentService service = new CommentService(context, wordCounterMock.Object);
+
+                //act
+                var storyVM = await service.GetVMByStoryIdAsync(2);
+
+                //assert 
+                Assert.NotNull(storyVM);
+                Assert.Null(storyVM.ShortStory);
+
+
+
+            }
+
+
+        }
         [Fact]
         public async Task GetVMByStoryIdAsync_NotFound()
         {
